@@ -34,22 +34,43 @@ namespace AspNetCoreWebApiJWTAuthentication.Controllers
 
                 var claims = new[]
                 {
-                    new Claim(JwtRegisteredClaimNames.Sub, loginViewModel.Username),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                    new Claim("username", loginViewModel.Username),
+                    new Claim("jti", Guid.NewGuid().ToString()),
+                    new Claim("email", "bidianqing@qq.com"),
+                    new Claim("age", "26"),
+                    new Claim("phone", "18515278856"),
+                    new Claim("qq", "243527176"),
+                    new Claim("birth", "1991-09-16"),
+                    new Claim("userId", "1"),
+                    new Claim(JwtRegisteredClaimNames.Gender,"男")
                 };
 
-                var token = new JwtSecurityToken
+                var jwtSecurityToken = new JwtSecurityToken
                 (
-                    issuer: _configuration["Issuer"],
-                    audience: _configuration["Audience"],
-                    claims: claims,
-                    expires: DateTime.UtcNow.AddDays(60),
-                    notBefore: DateTime.UtcNow,
+                    issuer: _configuration["Issuer"],                   // 发行人
+                    audience: _configuration["Audience"],               // 接收方
+                    claims: claims,                                     // 声明
+                    expires: DateTime.Now.AddMinutes(1),                // 过期时间
+                    notBefore: DateTime.Now,                            // 定义在什么时间之前，该jwt都是不可用的
                     signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SigningKey"])),
                          SecurityAlgorithms.HmacSha256)
                 );
 
-                return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
+                return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken) });
+
+                //var payload = new Dictionary<string, object>
+                //{
+                //    { "username", loginViewModel.Username }
+                //};
+                //string secret = _configuration["SigningKey"];
+
+                //IJwtAlgorithm algorithm = new HMACSHA256Algorithm();
+                //IJsonSerializer serializer = new JsonNetSerializer();
+                //IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
+                //IJwtEncoder encoder = new JwtEncoder(algorithm, serializer, urlEncoder);
+
+                //var token = encoder.Encode(payload, secret);
+                //return Ok(new { token = token });
             }
 
             return BadRequest();

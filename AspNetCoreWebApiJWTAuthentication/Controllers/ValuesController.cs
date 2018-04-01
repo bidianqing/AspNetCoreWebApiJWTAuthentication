@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 
 namespace AspNetCoreWebApiJWTAuthentication.Controllers
 {
@@ -12,7 +14,9 @@ namespace AspNetCoreWebApiJWTAuthentication.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            return new string[] { "value1", "value2" };
+            var claims = HttpContext.User.Claims;
+            string email = claims.FirstOrDefault(u => u.Type == "username")?.Value;
+            return new string[] { "sdfsdf"};
         }
 
         // GET api/values/5
