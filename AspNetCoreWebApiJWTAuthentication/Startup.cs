@@ -1,10 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace AspNetCoreWebApiJWTAuthentication
 {
@@ -29,6 +35,22 @@ namespace AspNetCoreWebApiJWTAuthentication
                     ValidIssuer = Configuration["Issuer"],
                     ValidAudience = Configuration["Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SigningKey"]))
+                };
+
+                options.Events = new JwtBearerEvents();
+                options.Events.OnChallenge = context =>
+                {
+                    context.HandleResponse();
+                    context.Response.ContentType = "application/json";
+
+                    var payload = new JObject
+                    {
+                        ["error"] = context.Error,
+                        ["error_description"] = context.ErrorDescription,
+                        ["error_uri"] = context.ErrorUri
+                    };
+
+                    return context.Response.WriteAsync(payload.ToString());
                 };
             });
             services.AddMvc();
