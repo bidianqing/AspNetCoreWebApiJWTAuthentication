@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Security.Claims;
 
 namespace AspNetCoreWebApiJWTAuthentication.Controllers
 {
@@ -13,8 +14,9 @@ namespace AspNetCoreWebApiJWTAuthentication.Controllers
         public IActionResult Get()
         {
             var claims = HttpContext.User.Claims;
-            string email = claims.FirstOrDefault(u => u.Type == "username")?.Value;
-            return Json(new { success = true });
+            string username = claims.FirstOrDefault(u => u.Type == "username")?.Value;
+            string email = claims.FirstOrDefault(u => u.Type == ClaimTypes.Email)?.Value;
+            return Json(new { success = true, username = username, email = email });
         }
 
         // GET api/values/5

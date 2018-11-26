@@ -36,7 +36,7 @@ namespace AspNetCoreWebApiJWTAuthentication.Controllers
                 {
                     new Claim("username", loginViewModel.Username),
                     new Claim("jti", Guid.NewGuid().ToString()),
-                    new Claim("email", "bidianqing@qq.com"),
+                    new Claim(ClaimTypes.Email, "bidianqing@qq.com"),
                     new Claim("age", "26"),
                     new Claim("phone", "18515278856"),
                     new Claim("qq", "243527176"),
@@ -57,20 +57,6 @@ namespace AspNetCoreWebApiJWTAuthentication.Controllers
                 );
 
                 return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken) });
-
-                //var payload = new Dictionary<string, object>
-                //{
-                //    { "username", loginViewModel.Username }
-                //};
-                //string secret = _configuration["SigningKey"];
-
-                //IJwtAlgorithm algorithm = new HMACSHA256Algorithm();
-                //IJsonSerializer serializer = new JsonNetSerializer();
-                //IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
-                //IJwtEncoder encoder = new JwtEncoder(algorithm, serializer, urlEncoder);
-
-                //var token = encoder.Encode(payload, secret);
-                //return Ok(new { token = token });
             }
 
             return BadRequest();
