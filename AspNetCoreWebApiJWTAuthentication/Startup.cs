@@ -60,24 +60,24 @@ namespace AspNetCoreWebApiJWTAuthentication
 
                 //    return context.Response.WriteAsync(payload.ToString());
                 //};
-                options.Events.OnAuthenticationFailed = context =>
-                {
-                    var payload = new JObject
-                    {
-                        ["success"] = false,
-                        ["message"] = "授权失败",
-                        ["data"] = null
-                    };
+                //options.Events.OnAuthenticationFailed = context =>
+                //{
+                //    var payload = new JObject
+                //    {
+                //        ["success"] = false,
+                //        ["message"] = "授权失败",
+                //        ["data"] = null
+                //    };
 
-                    context.Response.OnStarting(async () =>
-                    {
-                        context.Response.StatusCode = 401;
-                        context.Response.ContentType = "application/json";
-                        await context.Response.WriteAsync(payload.ToString());
-                    });
+                //    context.Response.OnStarting(async () =>
+                //    {
+                //        context.Response.StatusCode = 401;
+                //        context.Response.ContentType = "application/json";
+                //        await context.Response.WriteAsync(payload.ToString());
+                //    });
 
-                    return Task.CompletedTask;
-                };
+                //    return Task.CompletedTask;
+                //};
             });
 
             services.AddMvc(options =>
