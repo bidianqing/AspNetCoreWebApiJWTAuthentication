@@ -2,15 +2,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AspNetCoreWebApiJWTAuthentication
 {
@@ -34,10 +31,15 @@ namespace AspNetCoreWebApiJWTAuthentication
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = Configuration["Issuer"],
                     ValidAudience = Configuration["Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SigningKey"]))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SigningKey"])),
+                    ClockSkew = TimeSpan.Zero,
+                    ValidateLifetime = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
                 };
 
                 options.Events = new JwtBearerEvents();
+                // 当没有鉴权或鉴权失败 http请求以401状态吗响应  此时response body 没有值
                 //options.Events.OnChallenge = context =>
                 //{
                 //    //Exception exception = context.AuthenticateFailure;
