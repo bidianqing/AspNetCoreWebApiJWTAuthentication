@@ -1,12 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace AspNetCoreWebApiJWTAuthentication
 {
@@ -34,23 +38,55 @@ namespace AspNetCoreWebApiJWTAuthentication
                 };
 
                 options.Events = new JwtBearerEvents();
-                options.Events.OnChallenge = context =>
-                {
-                    context.HandleResponse();
-                    context.Response.ContentType = "application/json";
+                //options.Events.OnChallenge = context =>
+                //{
+                //    //Exception exception = context.AuthenticateFailure;
+                //    //if (exception != null)
+                //    //{
+                //    //    return Task.CompletedTask;
+                //    //}
 
+                //    context.HandleResponse();
+
+                //    var payload = new JObject
+                //    {
+                //        ["success"] = false,
+                //        ["message"] = "无效授权",
+                //        ["payload"] = null
+                //    };
+
+                //    context.Response.ContentType = "application/json";
+                //    context.Response.StatusCode = 401;
+
+                //    return context.Response.WriteAsync(payload.ToString());
+                //};
+                options.Events.OnAuthenticationFailed = context =>
+                {
                     var payload = new JObject
                     {
-                        ["error"] = context.Error,
-                        ["error_description"] = context.ErrorDescription,
-                        ["error_uri"] = context.ErrorUri
+                        ["success"] = false,
+                        ["message"] = "授权失败",
+                        ["data"] = null
                     };
 
-                    return context.Response.WriteAsync(payload.ToString());
+                    context.Response.OnStarting(async () =>
+                    {
+                        context.Response.StatusCode = 401;
+                        context.Response.ContentType = "application/json";
+                        await context.Response.WriteAsync(payload.ToString());
+                    });
+
+                    return Task.CompletedTask;
                 };
             });
 
-            services.AddMvc();
+            services.AddMvc(options =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                                 .RequireAuthenticatedUser()
+                                 .Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
