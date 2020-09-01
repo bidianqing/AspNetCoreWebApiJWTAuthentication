@@ -42,7 +42,8 @@ namespace AspNetCoreWebApiJWTAuthentication.Controllers
                     new Claim("qq", "243527176"),
                     new Claim("birth", "1991-09-16"),
                     new Claim("userId", "1"),
-                    new Claim(JwtRegisteredClaimNames.Gender,"男")
+                    new Claim(JwtRegisteredClaimNames.Gender,"男"),
+                    new Claim(ClaimTypes.Name,"1111"),
                 };
 
                 var jwtSecurityToken = new JwtSecurityToken
