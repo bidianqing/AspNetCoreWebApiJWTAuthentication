@@ -22,11 +22,11 @@ namespace AspNetCoreWebApiJWTAuthentication.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("token")]
-        public IActionResult Post([FromBody]LoginViewModel loginViewModel)
+        public IActionResult Post([FromBody]LoginModel loginModel)
         {
             if (ModelState.IsValid)
             {
-                var userId = GetUserIdFromCredentials(loginViewModel);
+                var userId = GetUserIdFromCredentials(loginModel);
                 if (userId == -1)
                 {
                     return Unauthorized();
@@ -34,7 +34,7 @@ namespace AspNetCoreWebApiJWTAuthentication.Controllers
 
                 var claims = new[]
                 {
-                    new Claim("username", loginViewModel.Username),
+                    new Claim("username", loginModel.Username),
                     new Claim("jti", Guid.NewGuid().ToString()),
                     new Claim(ClaimTypes.Email, "bidianqing@qq.com"),
                     new Claim("age", "26"),
@@ -57,16 +57,22 @@ namespace AspNetCoreWebApiJWTAuthentication.Controllers
                          SecurityAlgorithms.HmacSha256)
                 );
 
-                return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken) });
+                string token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+
+                return Ok(new LoginReponseModel
+                {
+                    Token = token,
+                    Id = 830334368416268288
+                });
             }
 
             return BadRequest();
         }
 
-        private int GetUserIdFromCredentials(LoginViewModel loginViewModel)
+        private int GetUserIdFromCredentials(LoginModel loginModel)
         {
             var userId = -1;
-            if (loginViewModel.Username == "sa" && loginViewModel.Password == "sa")
+            if (loginModel.Username == "sa" && loginModel.Password == "sa")
             {
                 userId = 5;
             }

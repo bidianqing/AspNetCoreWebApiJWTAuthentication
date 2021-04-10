@@ -12,8 +12,6 @@ namespace AspNetCoreWebApiJWTAuthentication.Controllers
     {
         // GET api/values
         [HttpGet]
-        //[AllowAnonymous]
-        //[Authorize(JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult Get()
         {
             string name = HttpContext.User.Identity.Name;
