@@ -38,7 +38,7 @@ namespace AspNetCoreWebApiJWTAuthentication
 
             if (jt.Type == JTokenType.Null && typeof(long).Equals(objectType))
             {
-                throw new ArgumentException();
+                throw new ArgumentException("参数异常");
             }
 
             if (jt.Type == JTokenType.Null && typeof(long?).Equals(objectType))
