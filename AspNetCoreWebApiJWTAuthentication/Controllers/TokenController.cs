@@ -1,23 +1,21 @@
 ﻿using AspNetCoreWebApiJWTAuthentication.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace AspNetCoreWebApiJWTAuthentication.Controllers
 {
-    public class TokenController : Controller
+    [ApiController]
+    public class TokenController : ControllerBase
     {
         private readonly IConfiguration _configuration;
         public TokenController(IConfiguration configuration)
         {
             _configuration = configuration;
         }
-
 
         [AllowAnonymous]
         [HttpPost]
@@ -46,6 +44,9 @@ namespace AspNetCoreWebApiJWTAuthentication.Controllers
                     new Claim(ClaimTypes.Name,"1111"),
                 };
 
+                var issuer = _configuration["Issuer"];
+                var audience = _configuration["Audience"];
+                var SigningKey = _configuration["SigningKey"];
                 var jwtSecurityToken = new JwtSecurityToken
                 (
                     issuer: _configuration["Issuer"],                       // 发行人
