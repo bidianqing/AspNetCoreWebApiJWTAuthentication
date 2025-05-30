@@ -1,6 +1,7 @@
 ﻿using AspNetCoreWebApiJWTAuthentication.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -40,10 +41,10 @@ namespace AspNetCoreWebApiJWTAuthentication.Controllers
                     new Claim("qq", "243527176"),
                     new Claim("birth", "1991-09-16"),
                     new Claim("userId", "1"),
-                    new Claim(JwtRegisteredClaimNames.Gender,"男"),
+                    new Claim("gender","男"),
                     new Claim(ClaimTypes.Name,"1111"),
                 };
-
+                
                 var issuer = _configuration["Issuer"];
                 var audience = _configuration["Audience"];
                 var SigningKey = _configuration["SigningKey"];

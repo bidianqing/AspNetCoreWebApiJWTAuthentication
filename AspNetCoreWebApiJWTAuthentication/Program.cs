@@ -1,4 +1,4 @@
-﻿using AspNetCoreWebApiJWTAuthentication;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -9,14 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers(options =>
 {
-    var policy = new AuthorizationPolicyBuilder()
-                     .RequireAuthenticatedUser()
-                     .Build();
-    options.Filters.Add(new AuthorizeFilter(policy));
-})
-.AddNewtonsoftJson(options =>
-{
-    options.SerializerSettings.Converters.Add(new LongToStringConverterWithNewtonsoftJson());
+    //var policy = new AuthorizationPolicyBuilder()
+    //                 .RequireAuthenticatedUser()
+    //                 .Build();
+    //options.Filters.Add(new AuthorizeFilter(policy));
 });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
@@ -34,6 +30,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateAudience = true,
     };
 });
+
+var multiSchemePolicy = new AuthorizationPolicyBuilder(
+    CookieAuthenticationDefaults.AuthenticationScheme,
+    JwtBearerDefaults.AuthenticationScheme)
+  .RequireAuthenticatedUser()
+  .Build();
+
+builder.Services.AddAuthorization(o => o.DefaultPolicy = multiSchemePolicy);
+
 
 var app = builder.Build();
 
