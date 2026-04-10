@@ -35,9 +35,9 @@ namespace AspNetCoreWebApiJWTAuthentication.Controllers
                 {
                     new Claim("username", loginModel.Username),
                     new Claim("jti", Guid.NewGuid().ToString()),
-                    new Claim(ClaimTypes.Email, "bidianqing@qq.com"),
+                    new Claim(ClaimTypes.Email, "xxxx@qq.com"),
                     new Claim("age", "26"),
-                    new Claim("phone", "18515278856"),
+                    new Claim("phone", "185xxxx856"),
                     new Claim("qq", "243527176"),
                     new Claim("birth", "1991-09-16"),
                     new Claim("userId", "1"),
